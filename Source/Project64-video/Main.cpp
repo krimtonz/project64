@@ -65,7 +65,7 @@ HINSTANCE hinstDLL = NULL;
 
 uint32_t   region = 0;
 
-unsigned int BMASK = 0x7FFFFF;
+unsigned int BMASK = 0xFFFFFF;
 // Reality display processor structure
 CRDP rdp;
 
@@ -879,7 +879,7 @@ void CALL RomOpen(void)
     g_settings->ReadGameSettings(name);
     ClearCache();
 
-    BMASK = g_settings->RdramSize() - 1;
+    BMASK = 0xFFFFFF;
     InitGfx();
 }
 
