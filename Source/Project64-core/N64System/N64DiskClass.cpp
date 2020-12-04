@@ -19,17 +19,17 @@
 #include <memory>
 
 CN64Disk::CN64Disk() :
-m_DiskImage(NULL),
-m_DiskImageBase(NULL),
-m_DiskHeader(NULL),
-m_DiskHeaderBase(NULL),
-m_ErrorMsg(EMPTY_STRING),
-m_DiskBufAddress(0),
-m_DiskSysAddress(0),
-m_DiskIDAddress(0),
-m_DiskRomAddress(0),
-m_DiskRamAddress(0),
-m_isShadowDisk(false)
+    m_DiskImage(NULL),
+    m_DiskImageBase(NULL),
+    m_DiskHeader(NULL),
+    m_DiskHeaderBase(NULL),
+    m_ErrorMsg(EMPTY_STRING),
+    m_DiskBufAddress(0),
+    m_DiskSysAddress(0),
+    m_DiskIDAddress(0),
+    m_DiskRomAddress(0),
+    m_DiskRamAddress(0),
+    m_isShadowDisk(false)
 {
 }
 
@@ -221,9 +221,14 @@ void CN64Disk::SaveDiskSettingID(bool temp)
 
     switch (GetCountry())
     {
-    case Germany: case french:  case Italian:
-    case Europe:  case Spanish: case Australia:
-    case X_PAL:   case Y_PAL:
+    case Country_Germany:
+    case Country_French:
+    case Country_Italian:
+    case Country_Europe:
+    case Country_Spanish:
+    case Country_Australia:
+    case Country_EuropeanX_PAL:
+    case Country_EuropeanY_PAL:
         g_Settings->SaveDword(Game_SystemType, SYSTEM_PAL);
         break;
     default:
@@ -381,6 +386,7 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
         m_DiskType = Test[5];
         uint16_t ROM_LBA_END = (Test[0xE0] << 8) | Test[0xE1];
         uint16_t RAM_LBA_START = (Test[0xE2] << 8) | Test[0xE3];
+        uint16_t RAM_LBA_END = (Test[0xE4] << 8) | Test[0xE5];
 
         if ((ROM_LBA_END + SYSTEM_LBAS) >= RAM_START_LBA[m_DiskType] ||
             ((RAM_LBA_START + SYSTEM_LBAS) != RAM_START_LBA[m_DiskType] && RAM_LBA_START != 0xFFFF))
@@ -392,19 +398,22 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
         }
 
         uint32_t ROM_SIZE = LBAToByte(SYSTEM_LBAS, ROM_LBA_END + 1);
-        uint32_t RAM_SIZE = RAM_SIZES[m_DiskType];
+        uint32_t RAM_SIZE = 0;
+        if (RAM_LBA_START != 0xFFFF && RAM_LBA_END != 0xFFFF)
+            RAM_SIZE = LBAToByte(SYSTEM_LBAS + RAM_LBA_START, RAM_LBA_END + 1 - RAM_LBA_START);
+        uint32_t FULL_RAM_SIZE = RAM_SIZES[m_DiskType];
 
-        if ((0x200 + ROM_SIZE) > DiskFileSize)
+        if ((0x200 + ROM_SIZE + RAM_SIZE) != DiskFileSize)
         {
             m_DiskFile.Close();
             SetError(MSG_FAIL_IMAGE);
-            WriteTrace(TraceN64System, TraceError, "Malformed D64 disk image, expected minimum filesize of %08X, filesize: %08X", (0x200 + ROM_SIZE), DiskFileSize);
+            WriteTrace(TraceN64System, TraceError, "Malformed D64 disk image, expected filesize of 0x200 + 0x%X + 0x%X = %08X, actual filesize: %08X", ROM_SIZE, RAM_SIZE, (0x200 + ROM_SIZE + RAM_SIZE), DiskFileSize);
             return false;
         }
 
         //Allocate File with Max RAM Area size
-        WriteTrace(TraceN64System, TraceError, "Allocate D64 ROM %08X + RAM %08X", ROM_SIZE, RAM_SIZE);
-        if (!AllocateDiskImage(0x200 + ROM_SIZE + RAM_SIZE))
+        WriteTrace(TraceN64System, TraceError, "Allocate D64 ROM %08X + RAM %08X", ROM_SIZE, FULL_RAM_SIZE);
+        if (!AllocateDiskImage(0x200 + ROM_SIZE + FULL_RAM_SIZE))
         {
             m_DiskFile.Close();
             return false;
@@ -633,11 +642,35 @@ uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t b
         }
 
         offset = MAMEStartOffset[dd_zone] + tr_off * TRACKSIZE(dd_zone) + block * BLOCKSIZE(dd_zone) + sector * sectorsize;
+
+        if (offset < (BLOCKSIZE(0) * SYSTEM_LBAS) && sector == 0)
+        {
+            uint16_t block = offset / (BLOCKSIZE(0));
+            uint16_t block_sys = m_DiskSysAddress / (BLOCKSIZE(0));
+            uint16_t block_id = m_DiskIDAddress / (BLOCKSIZE(0));
+
+            if (block < 12 && block != block_sys)
+                offset = 0xFFFFFFFF;
+            else if (block > 12 && block < 16 && block != block_id)
+                offset = 0xFFFFFFFF;
+        }
     }
     else if (m_DiskFormat == DiskFormatSDK)
     {
         //SDK
         offset = LBAToByte(0, PhysToLBA(head, track, block)) + sector * sectorsize;
+
+        if (offset < (BLOCKSIZE(0) * SYSTEM_LBAS) && sector == 0)
+        {
+            uint16_t block = offset / (BLOCKSIZE(0));
+            uint16_t block_sys = m_DiskSysAddress / (BLOCKSIZE(0));
+            uint16_t block_id = m_DiskIDAddress / (BLOCKSIZE(0));
+
+            if (block < 12 && block != block_sys)
+                offset = 0xFFFFFFFF;
+            else if (block > 12 && block < 16 && block != block_id)
+                offset = 0xFFFFFFFF;
+        }
     }
     else
     {
@@ -762,7 +795,7 @@ bool CN64Disk::IsSysSectorGood(uint32_t block, uint32_t sectorsize)
         //Always 0xFFFFFFFF
         if (*(uint32_t*)&m_DiskImage[(block * 0x4D08) + 0x18] != 0xFFFFFFFF)
             return false;
-        
+
         uint8_t alt = 0xC;  //Retail
         if ((block & 2) != 0)
             alt = 0xA;      //Development
@@ -783,12 +816,12 @@ Country CN64Disk::GetDiskCountryCode()
     switch (*(uint32_t*)&GetDiskAddressSys()[0])
     {
         case DISK_COUNTRY_JPN:
-            return Japan;
+            return Country_Japan;
         case DISK_COUNTRY_USA:
-            return USA;
+            return Country_NorthAmerica;
         case DISK_COUNTRY_DEV:
         default:
-            return UnknownCountry;
+            return Country_Unknown;
     }
 }
 
@@ -882,7 +915,7 @@ uint32_t CN64Disk::LBAToByte(uint32_t lba, uint32_t nlbas)
             totalbytes += blocksize;
             lba++;
             init_flag = false;
-            if ((nlbas != 0) && (lba > MAX_LBA))
+            if (((nlbas - 1) != 0) && (lba > MAX_LBA))
             {
                 return 0xFFFFFFFF;
             }
@@ -917,7 +950,7 @@ uint16_t CN64Disk::LBAToPhys(uint32_t lba)
     uint16_t vzone_lba = 0;
     if (vzone != 0)
         vzone_lba = VZONE_LBA_TBL[m_DiskType][vzone - 1];
-    
+
     //Calculate Physical Track
     uint16_t track = (lba - vzone_lba) >> 1;
 

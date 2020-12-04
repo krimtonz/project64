@@ -5,7 +5,7 @@
 # 1 # "Bosanski" // ID JEZIKA
 # 2 # "Alen Alic" // Autor
 # 3 # "2.3" // Verzija
-# 4 # "November, 2019" // Datum
+# 4 # "June, 2020" // Datum
 
 // O DLL dijalogu
 # 5 # "Trenutni jezik"
@@ -23,17 +23,17 @@
 / *************************************************** ********************************
 * Meni                                                                           *
 **************************************************** ******************************* /
-// Izbornik datoteke
-# 100 # "& datoteka"
-# 101 # "& Otvori ROM"
-# 102 # "ROM i informacije ...."
+// Izbornik Datoteke
+# 100 # "Datoteka"
+# 101 # "Otvori ROM"
+# 102 # "ROM i informacije..."
 # 103 # "Pokrenite emulaciju"
-# 104 # "& Krajnja emulacija"
-# 105 # "Odaberite ROM direktorijum ..."
+# 104 # "Krajnja emulacija"
+# 105 # "Odaberite ROM direktorijum..."
 # 106 # "Osveži listu ROM-a"
 # 107 # "Najnoviji ROM"
 # 108 # "Najnoviji ROM direktoriji"
-# 109 # "E & xit"
+# 109 # "Exit"
 # 110 # "Otvori i kombinovano"
 
 
@@ -50,32 +50,32 @@
 # 129 # "Trenutna ušteda i tata"
 # 130 # "Trikovi ..."
 # 131 # "GS dugme"
-# 132 # "R & esume"
+# 132 # "Resume"
 # 133 # "Meko resetiranje"
-# 134 # "& Hard Reset"
+# 134 # "Hard Reset"
 # 135 # "Zamjena i disk"
 
 // Izbornik mogućnosti
 # 140 # "Opcije"
 # 141 # "i preko cijelog ekrana"
-# 142 # "I uvijek u & vrhu"
-# 143 # "Konfiguriranje grafičkog dodatka ..."
-# 144 # "Konfiguriranje audio dodatka ..."
-# 145 # "Konfiguriranje dodatka kontrolera ..."
-# 146 # "Konfiguriranje RSP dodatka ..."
+# 142 # "I uvijek u vrhu"
+# 143 # "Konfiguriranje grafičkog dodatka..."
+# 144 # "Konfiguriranje audio dodatka..."
+# 145 # "Konfiguriranje dodatka kontrolera.."
+# 146 # "Konfiguriranje RSP dodatka..."
 # 147 # "Prikaži upotrebu CPU-a"
-# 148 # "& postavke ..."
+# 148 # "Postavke.."
 
 // Meni za uklanjanje pogrešaka
 # 160 # "i ispravljanje pogrešaka"
 
 // Jezik meni
-# 175 # "i jezik"
+# 175 # "Jezik"
 
 // Izbornik pomoći
 # 180 # "Pomoć"
 # 181 # "O Conf & ig datotekama"
-# 182 # "& O projektu64"
+# 182 # "O projektu64"
 # 183 # "Podrška i forum"
 # 184 # "i početna stranica"
 
@@ -91,7 +91,7 @@
 # 198 # "Slot 8"
 # 199 # "Slot 9"
 # 200 # "Slot 10"
-# 201 # "Odabran je Slot (% ws)"
+# 201 # "Odabran je Slot (%ws)"
 
 // Pojavni meni
 # 210 # "Igraj igru"
@@ -99,7 +99,7 @@
 # 212 # "Uređivanje postavki igre"
 # 213 # "Uredi šifre"
 # 214 # "Grafički dodatak"
-# 215 # "Igraj igru ​​s diskom"
+# 215 # "Igraj igru sa diskom"
 
 // Alternativno ime za spremanje mjesta
 # 220 # "Spremanje utora - zadano"
@@ -167,13 +167,13 @@
 # 307 # "Bilješke (korisnik)"
 # 308 # "Cartridge ID"
 # 309 # "proizvođač"
-# 310 # "zemlja"
-# 311 # "programer"
+# 310 # "Zemlja"
+# 311 # "Programer"
 # 312 # "CRC1"
 # 313 # "CRC2"
 # 314 # "CIC čip"
 # 315 # "Datum objavljivanja"
-# 316 # "žanr"
+# 316 # "Žanr"
 # 317 # "Igrači"
 # 318 # "Prisilne povratne informacije"
 # 319 # "Format datoteke"
@@ -325,7 +325,7 @@
 # 581 # "8 MB"
 
 // Napredno povezivanje blokova
-# 600 # "uključeno"
+# 600 # "Uključeno"
 # 601 # "Isključeno"
 
 // Spremi tip
@@ -441,7 +441,7 @@
 # 1030 # "Šifra ažurirana"
 
 // Cheat Popup Menu
-# 1040 # "Dodaj novu šifru ..."
+# 1040 # "Dodaj novu šifru..."
 # 1041 # "Uredi"
 # 1042 # "Obriši"
 
@@ -457,13 +457,13 @@
 * Prozor za podršku *
 **************************************************** ******************************* /
 # 1200 # "Projekt podrške64"
-# 1201 # "Project64 je softverski paket dizajniran za oponašanje sistema Nintendo64 video igara na računaru sa sistemom Microsoft Windows. To vam omogućuje reprodukciju pravog N64 softvera na gotovo isti način kao što je to slučaj s originalnim hardverskim sistemom. \ N \ nAko vam se sviđa Project64 i izvukli ste neke vrijednosti iz toga, molimo vas da podržite project64 ili kao zahvalnost ili vašu želju da se stalno poboljšava. \ n \ nAko ste podržali project64: "
+# 1201 # "Project64 je softverski paket dizajniran za oponašanje sistema Nintendo64 video igara na računaru sa sistemom Microsoft Windows. To vam omogućuje reprodukciju pravog N64 softvera na gotovo isti način kao što je to slučaj s originalnim hardverskim sistemom. \ N \ nAko vam se sviđa Project64 i izvukli ste neke vrijednosti iz toga, molimo vas da podržite project64 ili kao zahvalnost ili vašu želju da se stalno poboljšava. \ n \ nAko ste podržali project64:"
 # 1202 # "Unesite kôd obavijesti"
 # 1203 # "Projekt podrške64"
 # 1204 # "Nastavi"
 # 1205 # "Unesite kod za podršku"
 # 1206 # "Netačan kod podrške"
-# 1207 # "hvala"
+# 1207 # "Hvala"
 # 1208 # "Unesite kod"
 # 1209 # "Unesite kod u e-poštu"
 # 1210 # "OK"
@@ -478,7 +478,7 @@
 # 2003 # "Nije uspela dodeliti memoriju"
 # 2004 # "Zadani ili odabrani video dodatak nedostaje ili je nevažeći. \ N \ nTrebate ući u Postavke i odabrati video (grafički) dodatak. \ NProvjerite da li imate najmanje jednu kompatibilnu datoteku dodataka u svojoj mapi dodataka."
 # 2005 # "Zadani ili odabrani audio dodatak nedostaje ili je neispravan. \ N \ nTrebate ući u Postavke i odabrati audio (zvučni) dodatak. \ NProverite da li imate mapu jedne kompatibilne datoteke dodataka u svojoj mapi dodataka."
-# 2006 # "Zadani ili odabrani RSP dodatak nedostaje ili je nevažeći. \ N \ nTrebate ući u Postavke i odabrati RSP (Reality Signal Processor) dodatak. \ NProvjerite da li imate najmanje jednu kompatibilnu datoteku dodataka u svojoj mapi dodataka. . "
+# 2006 # "Zadani ili odabrani RSP dodatak nedostaje ili je nevažeći. \ N \ nTrebate ući u Postavke i odabrati RSP (Reality Signal Processor) dodatak. \ NProvjerite da li imate najmanje jednu kompatibilnu datoteku dodataka u svojoj mapi dodataka. "
 # 2007 # "Zadani ili odabrani ulazni dodatak nedostaje ili je neispravan. \ N \ nTrebate ući u Postavke i odabrati ulazni (regulator) dodatak. \ NProverite da li imate mapu jedne kompatibilne datoteke dodataka u svojoj mapi dodataka."
 # 2008 # "Nije uspjelo učitavanje dodatka:"
 # 2009 # "Nije uspjelo učitavanje riječi. \ N \ nProvjerite ROM i njegove postavke."
@@ -491,12 +491,12 @@
 # 2016 # "Došlo je do pogreške prilikom pokušaja otvaranja zip datoteke."
 # 2017 # "Datoteka učitana ne čini se valjanim N64 ROM-om. \ N \ nOvjerite svoje ROM-ove s GoodN64."
 # 2018 # "Nepoznata zemlja"
-# 2019. # "Nepoznati CIC čip"
+# 2019 # "Nepoznati CIC čip"
 # 2020 # "Nepoznati format datoteke"
 # 2021 # "Nepoznata radnja memorije \ n \ nEmulacija je zaustavljena"
 # 2022 # "Neodvršeni R4300i kod kod"
 # 2023 # "Izvođenje iz nekarpiranog prostora. \ N \ nProvjerite ROM i njegove postavke."
-# 2024 # "Čini se da ovo sačuvano stanje ne odgovara tekućem ROM-u. \ N \ nDržave moraju biti spremljene i učitane između 100% identičnih ROM-ova. \ NPosebno REGION i VERSION moraju biti isti. \ NUmetanje ovog stanja je vjerovatno će prouzrokovati pad igre i / ili emulatora. \ n \ n Jeste li sigurni da želite nastaviti s učitavanjem? "
+# 2024 # "Čini se da ovo sačuvano stanje ne odgovara tekućem ROM-u. \ N \ nDržave moraju biti spremljene i učitane između 100% identičnih ROM-ova. \ NPosebno REGION i VERSION moraju biti isti. \ NUmetanje ovog stanja je vjerovatno će prouzrokovati pad igre i / ili emulatora. \ n \ n Jeste li sigurni da želite nastaviti s učitavanjem?"
 # 2025 # "Greška"
 # 2026 # "Slijed autorskih prava nije pronađen u LUT-u. Igra više neće funkcionirati."
 # 2027 # "Neuspjeh u zaštiti od kopiranja"
@@ -527,9 +527,9 @@
 # 2052 # "Greška u programu"
 # 2053 # "Nije pronađeno ime datoteke u datoteci 7z"
 # 2054 # "Grafička emulacija niskog nivoa"
-# 2055 # "Grafički LLE nije za opću upotrebu !!! \ nSavjetuje se da ovo koristite samo za testiranje, a ne za igranje igara. \ N \ nPromijenite na grafički LLE?"
+# 2055 # "Grafički LLE nije za opću upotrebu!!! \ nSavjetuje se da ovo koristite samo za testiranje, a ne za igranje igara. \ N \ nPromijenite na grafički LLE?"
 # 2056 # "Audio visoka emulacija"
-# 2057 # "Audio HLE zahtijeva dodatak treće strane !!! \ nAko ne upotrebljavate audio dodatak treće strane koji podržava HLE, nećete čuti zvuk. \ N \ nPromijenite na audio HLE?"
+# 2057 # "Audio HLE zahtijeva dodatak treće strane!!! \ nAko ne upotrebljavate audio dodatak treće strane koji podržava HLE, nećete čuti zvuk. \ N \ nPromijenite na audio HLE?"
 # 2058 # "Učitana datoteka ne čini se valjanim 64DD IPL ROM-om. \ N \ nOvjerite svoje ROM-ove s GoodN64."
 # 2059 # "Nintendo 64DD Japanski maloprodajni IPL ROM nije pronađen. \ NTreba se reproducirati slike diska sa japanskom regijom 64DD. \ N \ n Molimo odaberite željeni ROM u postavkama."
 # 2061 # "Nintendo 64DD američki maloprodajni IPL ROM nije pronađen. \ NZatravan je za reprodukciju slika diska američke regije 64DD. \ N \ n Molimo odaberite željeni ROM u postavkama."
@@ -550,7 +550,7 @@
 # 3009 # "Roditeljska mapa"
 # 3010 # "Katalozi"
 # 3011 # "Interna memorija"
-# 3012 # "Skeniranje ..."
+# 3012 # "Skeniranje..."
 # 3013 # "OK"
 # 3014 # "Otkaži"
 # 3015 # "Informacije"
@@ -569,7 +569,7 @@
 # 3104 # "Pauza"
 # 3105 # "Nastavi"
 # 3106 # "Brzina igre"
-# 3107 # "Trenutno stanje uštede ..."
+# 3107 # "Trenutno stanje uštede..."
 # 3108 # "Automatski"
 # 3109 # "Slot"
 # 3110 # "Poništi"

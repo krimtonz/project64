@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include <Project64-core/AppInit.h>
-#include "Multilanguage\LanguageSelector.h"
-#include "Settings/UISettings.h"
+#include <Project64-core\AppInit.h>
+#include "UserInterface\WelcomeScreen.h"
+#include "Settings\UISettings.h"
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
@@ -11,7 +11,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
         if (!g_Lang->IsLanguageLoaded())
         {
-            CLanguageSelector().Select();
+            WelcomeScreen().DoModal();
         }
 
         //Create the main window with Menu
@@ -22,7 +22,6 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         g_Debugger = &Debugger;
         g_Plugins->SetRenderWindows(&MainWindow, &HiddenWindow);
         Notify().SetMainWindow(&MainWindow);
-        CSupportWindow SupportWindow;
         bool isROMLoaded = false;
 
         if (g_Settings->LoadStringVal(Cmd_RomFile).length() > 0 && g_Settings->LoadStringVal(Cmd_ComboDiskFile).length() > 0)
@@ -64,26 +63,23 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             }
         }
 
-        //Handle Main Window if ROM is not loaded and running
         if (!isROMLoaded)
         {
-            SupportWindow.Show(reinterpret_cast<HWND>(MainWindow.GetWindowHandle()));
+            CSupportWindow(MainWindow.Support()).Show((HWND)MainWindow.GetWindowHandle(), true);
             if (UISettingsLoadBool(RomBrowser_Enabled))
             {
                 WriteTrace(TraceUserInterface, TraceDebug, "Show Rom Browser");
-                //Display the rom browser
                 MainWindow.ShowRomList();
-                MainWindow.Show(true);	//Show the main window
+                MainWindow.Show(true);
                 MainWindow.HighLightLastRom();
             }
             else
             {
                 WriteTrace(TraceUserInterface, TraceDebug, "Show Main Window");
-                MainWindow.Show(true);	//Show the main window
+                MainWindow.Show(true);
             }
         }
 
-        //Process Messages till program is closed
         WriteTrace(TraceUserInterface, TraceDebug, "Entering Message Loop");
         MainWindow.ProcessAllMessages();
         WriteTrace(TraceUserInterface, TraceDebug, "Message Loop Finished");
@@ -99,7 +95,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     catch (...)
     {
         WriteTrace(TraceUserInterface, TraceError, "Exception caught (File: \"%s\" Line: %d)", __FILE__, __LINE__);
-        MessageBox(NULL, stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).c_str(), "Exception", MB_OK);
+        MessageBox(NULL, stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).ToUTF16().c_str(), L"Exception", MB_OK);
     }
     AppCleanup();
     CoUninitialize();

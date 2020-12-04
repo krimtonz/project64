@@ -12,6 +12,7 @@
 #include "stdafx.h"
 #include "DebuggerUI.h"
 #include "DMALog.h"
+#include <fstream>
 
 CDebugDMALogView::CDebugDMALogView(CDebuggerUI* debugger) :
 CDebugDialog<CDebugDMALogView>(debugger)
@@ -70,17 +71,21 @@ void CDebugDMALogView::RefreshList()
     int startIndex;
     int dmaLogSize = m_Debugger->DMALog()->GetNumEntries();
     
+    HWND hWndExportBtn = GetDlgItem(IDC_EXPORT_BTN);
+
     if (dmaLogSize == 0)
     {
         // Reset
         m_DMAList.DeleteAllItems();
         startIndex = 0;
         m_bFilterChanged = false;
+        ::EnableWindow(hWndExportBtn, FALSE);
     }
     else
     {
         // Continue from last index
         startIndex = m_nLastStartIndex;
+        ::EnableWindow(hWndExportBtn, TRUE);
     }
     
     m_DMAList.SetRedraw(FALSE);
@@ -96,9 +101,9 @@ void CDebugDMALogView::RefreshList()
         //    continue;
         //}
         
-        m_DMAList.AddItem(itemIndex, 0, stdstr_f("%08X", lpEntry->romAddr).c_str());
-        m_DMAList.AddItem(itemIndex, 1, stdstr_f("%08X", lpEntry->ramAddr).c_str());
-        m_DMAList.AddItem(itemIndex, 2, stdstr_f("%08X (%d)", lpEntry->length, lpEntry->length).c_str());
+        m_DMAList.AddItem(itemIndex, 0, stdstr_f("%08X", lpEntry->romAddr).ToUTF16().c_str());
+        m_DMAList.AddItem(itemIndex, 1, stdstr_f("%08X", lpEntry->ramAddr).ToUTF16().c_str());
+        m_DMAList.AddItem(itemIndex, 2, stdstr_f("%08X (%d)", lpEntry->length, lpEntry->length).ToUTF16().c_str());
         
         union
         {
@@ -108,13 +113,13 @@ void CDebugDMALogView::RefreshList()
 
         if (lpEntry->romAddr < g_Rom->GetRomSize())
         {
-            sig.u32 = *(uint32_t*)&rom[lpEntry->romAddr];
+            sig.u32 = _byteswap_ulong(*(uint32_t*)&rom[lpEntry->romAddr]);
         }
 
         // Todo checkbox to display all in hex
         if (isalnum(sig.sz[0]) && isalnum(sig.sz[1]) && isalnum(sig.sz[2]) && isalnum(sig.sz[3]))
         {
-            m_DMAList.AddItem(itemIndex, 4, (char*)sig.sz);
+            m_DMAList.AddItem(itemIndex, 4, stdstr((char*)sig.sz).ToUTF16().c_str());
         }
 
         itemIndex++;
@@ -128,6 +133,65 @@ void CDebugDMALogView::RefreshList()
     m_DMAList.SetRedraw(TRUE);
     
     m_nLastStartIndex = dmaLogSize;
+}
+
+void CDebugDMALogView::Export(void)
+{
+    OPENFILENAME openfilename;
+    TCHAR filePath[_MAX_PATH];
+
+    memset(&filePath, 0, sizeof(filePath));
+    memset(&openfilename, 0, sizeof(openfilename));
+    
+    wsprintf(filePath, L"*.csv");
+
+    const TCHAR* filters = (
+        /*1*/ L"Comma separated values (*.csv)\0*.csv;\0"
+        /*2*/ L"Plain text (*.txt)\0*.txt;\0"
+    );
+
+    const char *extensions[] = { "", ".csv", ".txt" };
+
+    openfilename.lStructSize = sizeof(openfilename);
+    openfilename.hwndOwner = (HWND)m_hWnd;
+    openfilename.lpstrFilter = filters;
+    openfilename.lpstrFile = filePath;
+    openfilename.lpstrInitialDir = L".";
+    openfilename.nMaxFile = MAX_PATH;
+    openfilename.Flags = OFN_HIDEREADONLY;
+
+    if (GetSaveFileName(&openfilename))
+    {
+        stdstr path;
+        path.FromUTF16(filePath);
+
+        if (openfilename.nFileExtension == 0)
+        {
+            path += extensions[openfilename.nFilterIndex];
+        }
+
+        std::ofstream file;
+        file.open(path, std::ios::out | std::ios::binary);
+
+        if (!file.is_open())
+        {
+            return;
+        }
+
+        file << "ROM Address,RAM Address,Length\r\n";
+
+        size_t numEntries = m_DMALog->GetNumEntries();
+
+        for (size_t nEntry = 0; nEntry < numEntries; nEntry++)
+        {
+            DMALOGENTRY* entry = m_DMALog->GetEntryByIndex(nEntry);
+
+            file << stdstr_f("0x%08X,0x%08X,0x%08X\r\n",
+                entry->romAddr, entry->ramAddr, entry->length);
+        }
+
+        file.close();
+    }
 }
 
 LRESULT CDebugDMALogView::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -151,11 +215,11 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
     m_DMAList.ModifyStyle(LVS_OWNERDRAWFIXED, 0, 0);
 
-    m_DMAList.AddColumn("ROM", 0);
-    m_DMAList.AddColumn("RAM", 1);
-    m_DMAList.AddColumn("Length", 2);
-    m_DMAList.AddColumn("Symbol (RAM)", 3);
-    m_DMAList.AddColumn("Signature", 4);
+    m_DMAList.AddColumn(L"ROM", 0);
+    m_DMAList.AddColumn(L"RAM", 1);
+    m_DMAList.AddColumn(L"Length", 2);
+    m_DMAList.AddColumn(L"Symbol (RAM)", 3);
+    m_DMAList.AddColumn(L"Signature", 4);
 
     m_DMAList.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
 
@@ -233,6 +297,9 @@ LRESULT CDebugDMALogView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& 
         m_DMALog->ClearEntries();
         RefreshList();
         break;
+    case IDC_EXPORT_BTN:
+        Export();
+        break;
     }
     return FALSE;
 }
@@ -244,11 +311,11 @@ LRESULT CDebugDMALogView::OnRamAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, H
         return FALSE;
     }
 
-    char szRamAddr[9];
+    wchar_t szRamAddr[9];
     char szRomAddr[9];
 
-    m_DMARamEdit.GetWindowTextA(szRamAddr, 9);
-    uint32_t ramAddr = strtoul(szRamAddr, NULL, 16);
+    m_DMARamEdit.GetWindowText(szRamAddr, 9);
+    uint32_t ramAddr = wcstoul(szRamAddr, NULL, 16);
     uint32_t romAddr, offset;
 
     DMALOGENTRY* lpEntry = m_DMALog->GetEntryByRamAddress(ramAddr, &romAddr, &offset);
@@ -256,17 +323,17 @@ LRESULT CDebugDMALogView::OnRamAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, H
     if (lpEntry != NULL)
     {
         sprintf(szRomAddr, "%08X", romAddr);
-        stdstr blockInfo = stdstr_f("Block: %08X -> %08X [%X] +%X", romAddr, ramAddr, lpEntry->length, offset);
-        m_BlockInfo.SetWindowTextA(blockInfo.c_str());
+        stdstr_f blockInfo("Block: %08X -> %08X [%X] +%X", romAddr, ramAddr, lpEntry->length, offset);
+        m_BlockInfo.SetWindowText(blockInfo.ToUTF16().c_str());
     }
     else
     {
         sprintf(szRomAddr, "????????");
-        m_BlockInfo.SetWindowTextA("Block: ?");
+        m_BlockInfo.SetWindowText(L"Block: ?");
     }
     
     m_bConvertingAddress = true;
-    m_DMARomEdit.SetWindowTextA(szRomAddr);
+    m_DMARomEdit.SetWindowText(stdstr(szRomAddr).ToUTF16().c_str());
     m_bConvertingAddress = false;
     return FALSE;
 }
@@ -278,29 +345,29 @@ LRESULT CDebugDMALogView::OnRomAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, H
         return FALSE;
     }
 
-    char szRamAddr[9];
-    char szRomAddr[9];
+    wchar_t szRamAddr[9];
+    wchar_t szRomAddr[9];
 
-    m_DMARomEdit.GetWindowTextA(szRomAddr, 9);
-    uint32_t romAddr = strtoul(szRomAddr, NULL, 16);
+    m_DMARomEdit.GetWindowText(szRomAddr, 9);
+    uint32_t romAddr = wcstoul(szRomAddr, NULL, 16);
     uint32_t ramAddr, offset;
 
     DMALOGENTRY* lpEntry = m_DMALog->GetEntryByRomAddress(romAddr, &ramAddr, &offset);
 
     if (lpEntry != NULL)
     {
-        sprintf(szRamAddr, "%08X", ramAddr);
+        wsprintf(szRamAddr, L"%08X", ramAddr);
         stdstr blockInfo = stdstr_f("Block: %08X -> %08X [%X] +%X", romAddr, ramAddr, lpEntry->length, offset);
-        m_BlockInfo.SetWindowTextA(blockInfo.c_str());
+        m_BlockInfo.SetWindowText(blockInfo.ToUTF16().c_str());
     }
     else
     {
-        sprintf(szRamAddr, "????????");
-        m_BlockInfo.SetWindowTextA("Block: ?");
+        wsprintf(szRamAddr, L"????????");
+        m_BlockInfo.SetWindowText(L"Block: ?");
     }
 
     m_bConvertingAddress = true;
-    m_DMARamEdit.SetWindowTextA(szRamAddr);
+    m_DMARamEdit.SetWindowText(szRamAddr);
     m_bConvertingAddress = false;
     return FALSE;
 }

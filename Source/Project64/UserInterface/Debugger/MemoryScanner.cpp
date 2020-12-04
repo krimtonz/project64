@@ -160,7 +160,7 @@ CScanResult::~CScanResult(void)
 {
 }
 
-void CScanResult::SetDescription(char* str)
+void CScanResult::SetDescription(const char* str)
 {
     if (m_Description != NULL)
     {
@@ -313,7 +313,7 @@ uint32_t CScanResult::GetVirtualAddress(void)
     }
 }
 
-bool CScanResult::SetMemoryValueFromString(char* str)
+bool CScanResult::SetMemoryValueFromString(const char* str)
 {
     if (g_MMU == NULL)
     {
@@ -744,7 +744,7 @@ void CMemoryScanner::FirstScanLoopString(DisplayFormat resultDisplayFormat)
         }
 
         result.m_Address = addr | m_VAddrBits;
-        result.Set((const char*)NULL);
+        result.Set((const wchar_t*)NULL);
         m_Results.push_back(result);
     next_addr:;
     }
@@ -773,7 +773,7 @@ void CMemoryScanner::FirstScanLoopIString(DisplayFormat resultDisplayFormat)
         }
 
         result.m_Address = addr | m_VAddrBits;
-        result.Set((const char*)NULL);
+        result.Set((const wchar_t*)NULL);
         m_Results.push_back(result);
     next_addr:;
     }
@@ -782,7 +782,7 @@ void CMemoryScanner::FirstScanLoopIString(DisplayFormat resultDisplayFormat)
 // scan for text of unknown single-byte encoding
 void CMemoryScanner::FirstScanLoopUnkString(void)
 {
-    const uint8_t* str = (const uint8_t*)m_Value._string;
+    const char* str = stdstr().FromUTF16(m_Value._string).c_str();
     int length = m_StringValueLength;
     
     uint32_t startAddr = m_RangeStartAddress;
@@ -846,7 +846,7 @@ void CMemoryScanner::FirstScanLoopUnkString(void)
         }
 
         result.m_Address = addr | m_VAddrBits;
-        result.Set((const char*)NULL);
+        result.Set((const wchar_t*)NULL);
         m_Results.push_back(result);
 
     next_addr:;
@@ -1015,7 +1015,7 @@ int CMemoryScanner::HexDigitVal(char c)
     return 0;
 }
 
-int CMemoryScanner::ParseHexString(char *dst, char* src)
+int CMemoryScanner::ParseHexString(char *dst, const char* src)
 {
     bool bHiNibble = true;
     uint8_t curByte = 0;

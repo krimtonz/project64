@@ -35,10 +35,12 @@ Source: "{#BaseDir}\Plugin\Audio\Jabo_Dsound.dll"; DestDir: "{app}\Plugin\Audio"
 Source: "{#BaseDir}\Plugin\Audio\Project64-Audio.dll"; DestDir: "{app}\Plugin\Audio"
 Source: "{#BaseDir}\Plugin\GFX\Jabo_Direct3D8.dll"; DestDir: "{app}\Plugin\GFX"
 Source: "{#BaseDir}\Plugin\GFX\Project64-Video.dll"; DestDir: "{app}\Plugin\GFX"
+Source: "{#BaseDir}\Plugin\GFX\GLideN64\*"; DestDir: "{app}\Plugin\GLideN64"; Flags: recursesubdirs skipifsourcedoesntexist
 Source: "{#BaseDir}\Plugin\Input\PJ64_NRage.dll"; DestDir: "{app}\Plugin\Input"
+Source: "{#BaseDir}\Plugin\Input\Project64-Input.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\RSP\RSP 1.7.dll"; DestDir: "{app}\Plugin\RSP"
 Source: "{#BaseDir}\Scripts\example.js"; DestDir: "{app}\Scripts"
-Source: "{#BaseDir}\apidoc.htm"; DestDir: "{app}\apidoc.htm"
+Source: "{#BaseDir}\apidoc.htm"; DestDir: "{app}"
 
 [Dirs]
 Name: "{app}\Config"; Permissions: everyone-full

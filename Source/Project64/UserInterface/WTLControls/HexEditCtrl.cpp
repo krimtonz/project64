@@ -54,10 +54,10 @@ CHexEditCtrl::~CHexEditCtrl(void)
 {
 }
 
-int CALLBACK CHexEditCtrl::HaveFontCb(CONST LOGFONTA* lplf, CONST TEXTMETRICA* /*lptm*/, DWORD /*FontType*/, LPARAM lParam)
+int CALLBACK CHexEditCtrl::HaveFontCb(CONST LOGFONTW* lplf, CONST TEXTMETRICW* /*lptm*/, DWORD /*FontType*/, LPARAM lParam)
 {
-    const char* name = (const char*)lParam;
-    if (strcmp(lplf->lfFaceName, name) == 0)
+    const wchar_t * name = (const wchar_t*)lParam;
+    if (wcscmp(lplf->lfFaceName, name) == 0)
     {
         return 0;
     }
@@ -66,7 +66,7 @@ int CALLBACK CHexEditCtrl::HaveFontCb(CONST LOGFONTA* lplf, CONST TEXTMETRICA* /
 
 bool CHexEditCtrl::HaveFont(HDC hdc, const char* name)
 {
-    if (EnumFonts(hdc, name, HaveFontCb, (LPARAM)name) == 0)
+    if (EnumFonts(hdc, stdstr(name).ToUTF16().c_str(), HaveFontCb, (LPARAM)stdstr(name).ToUTF16().c_str()) == 0)
     {
         return true;
     }
@@ -117,7 +117,7 @@ BOOL CHexEditCtrl::Attach(HWND hWnd)
             CLIP_DEFAULT_PRECIS,
             DEFAULT_QUALITY,
             FF_DONTCARE | FIXED_PITCH,
-            "Consolas");
+            L"Consolas");
     }
     else
     {
@@ -508,15 +508,16 @@ bool CHexEditCtrl::UpdateCaretUI(bool bEnsureVisible, bool bTop)
 
 void CHexEditCtrl::Text(int x, int y, const char *text, COLORREF bg, COLORREF fg, CRect *rcOut)
 {
-    size_t length = strlen(text);
+    std::wstring textOuput = stdstr(text).ToUTF16(CP_ACP);
+    size_t length = textOuput.length();
     int calcWidth = length * m_CharWidth;
 
     CRect rc(x, y, 0, 0);
     COLORREF orgBg = ::SetBkColor(m_BackDC, bg);
     COLORREF orgFg = ::SetTextColor(m_BackDC, fg);
-    ::DrawText(m_BackDC, text, -1, &rc, DT_TOP | DT_NOPREFIX | DT_CALCRECT);
+    ::DrawText(m_BackDC, textOuput.c_str(), -1, &rc, DT_TOP | DT_NOPREFIX | DT_CALCRECT);
     rc.right = rc.left + calcWidth; // just in case
-    ::DrawText(m_BackDC, text, -1, &rc, DT_TOP | DT_NOPREFIX);
+    ::DrawText(m_BackDC, textOuput.c_str(), -1, &rc, DT_TOP | DT_NOPREFIX);
     InvalidateRect(&rc, false);
     ::SetBkColor(m_BackDC, orgBg);
     ::SetBkColor(m_BackDC, orgFg);
@@ -656,38 +657,17 @@ void CHexEditCtrl::GetAsciiCellPos(int index, CRect* rc)
 
 char CHexEditCtrl::ByteAscii(uint8_t value)
 {
-    if (value <= 0x1F)
-    {
-        return '.';
-    }
-
-    if (value >= 0x20 && value <= 0x7E)
+    // ISO 8859-1
+    if ((value >= 0x20 && value <= 0x7E) || value >= 0xA1)
     {
         return (char)value;
     }
 
-    switch (value)
-    {
-    case 0x7F:
-    case 0x81:
-    case 0x8D:
-    case 0x8F:
-    case 0x90:
-    case 0x9D:
-        // undefined in windows-1252
-        return '.';
-    }
-
-    return (char)value;
+    return '.';
 }
 
 uint8_t CHexEditCtrl::HexCharValue(char c)
 {
-    if (!isxdigit(c))
-    {
-        return 0;
-    }
-
     if (c >= '0' && c <= '9') return (c - '0');
     if (c >= 'A' && c <= 'F') return (c - 'A') + 0x0A;
     if (c >= 'a' && c <= 'f') return (c - 'a') + 0x0A;

@@ -71,7 +71,7 @@ typedef union {
     int64_t   _sint64;
     float     _float;
     double    _double;
-    const char* _string;
+    const wchar_t* _string;
 } MixedValue;
 
 class CMixed
@@ -106,7 +106,7 @@ public:
     inline void Set(int64_t v)     { SetType(ValueType_int64);  m_Value._sint64 = v; }
     inline void Set(float v)       { SetType(ValueType_float);  m_Value._float = v; }
     inline void Set(double v)      { SetType(ValueType_double); m_Value._double = v; }
-    inline void Set(const char* v) { SetType(ValueType_string); m_Value._string = v; }
+    inline void Set(const wchar_t* v) { SetType(ValueType_string); m_Value._string = v; }
 
     inline void Get(uint8_t* v)     { *v = m_Value._uint8; }
     inline void Get(int8_t* v)      { *v = m_Value._sint8; }
@@ -118,7 +118,7 @@ public:
     inline void Get(int64_t* v)     { *v = m_Value._sint64; }
     inline void Get(float* v)       { *v = m_Value._float; }
     inline void Get(double* v)      { *v = m_Value._double; }
-    inline void Get(const char** v) { *v = m_Value._string; }
+    inline void Get(const wchar_t** v) { *v = m_Value._string; }
 
     const char* GetTypeName(void);
     int GetTypeSize(void);
@@ -154,10 +154,10 @@ public:
     int GetMemoryValueString(char* buffer, size_t size, bool bIgnoreHex = false);
     int GetAddressString(char *buffer);
     uint32_t GetVirtualAddress(void);
-    bool SetMemoryValueFromString(char* str);
+    bool SetMemoryValueFromString(const char* str);
     //bool IsSelected(void);
     //void SetSelected(bool bSelected);
-    void SetDescription(char* str);
+    void SetDescription(const char* str);
     const char* GetDescription(void);
     void DeleteDescription(void);
     bool GetMemoryValue(CMixed* v);
@@ -176,7 +176,7 @@ public:
     bool SetSearchType(SearchType searchType);
     void SetAddressType(AddressType addressType);
 
-    static int ParseHexString(char* dst, char* src);
+    static int ParseHexString(char* dst, const char* src);
 
     static bool AddrCheck(uint32_t addr, uint32_t rangeStart, uint32_t rangeEnd);
     static bool RangeCheck(uint32_t addrStart, uint32_t addrEnd, uint32_t rangeStart, uint32_t rangeEnd);

@@ -13,6 +13,8 @@
 #include "../Settings/GuiSettings.h"
 #include <Project64/UserInterface/Debugger/debugger.h>
 #include <Project64-core/Plugins/PluginClass.h>
+#include <Project64\UserInterface\CheatClassUI.h>
+#include <Project64\UserInterface\ProjectSupport.h>
 
 class CGfxPlugin;      //Plugin that controls the rendering
 class CAudioPlugin;    //Plugin for audio, need the hwnd
@@ -50,51 +52,41 @@ public:
     CMainGui(bool bMainWindow, const char * WindowTitle = "");
     ~CMainGui(void);
 
-    //Message Processing
     WPARAM ProcessAllMessages(void);
     bool ProcessGuiMessages(void);
-
-    //debugging functions
     void EnterLogOptions(void);
-
-    //Get Information about the window
-    int Height(void); //Get the Height of the window
-    int Width(void); //Get the Width of the window
+    int Height(void); 
+    int Width(void);
     float DPIScale(HWND hWnd);
 
-    //Manipulate the state of the window
-    void SetPos(int X, int Y);    //Move the window to this screen location
-    void Show(bool ShowWindow); //Show or Hide the current window
+    void SetPos(int X, int Y);
+    void Show(bool ShowWindow);
     void MakeWindowOnTop(bool OnTop);
     void BringToTop(void);
-    void Caption(LPCWSTR Caption);  //Set the caption of the window
+    void Caption(LPCWSTR Caption);
     void SaveWindowLoc(void);
 
-    //Menu Function
     void SetWindowMenu(CBaseMenu * Menu);
     void RefreshMenu(void);
     CBaseMenu * GetMenuClass(void) { return m_Menu; }
 
-    // Status bar
     void SetStatusText(int Panel, const wchar_t * Text);
     void ShowStatusBar(bool ShowBar);
 
-    //About Window
-    void AboutIniBox(void);
-    void AboutBox(void);
-
-    //Plugins
     bool ResetPluginsInUiThread(CPlugins * plugins, CN64System * System);
 
-    //Get Window Handle
+    void DisplayCheatsUI(bool BlockExecution);
+
     void * GetWindowHandle(void) const { return m_hMainWindow; }
     void * GetStatusBar(void) const { return m_hStatusWnd; }
     void * GetModuleInstance(void) const;
 
+    inline CProjectSupport & Support(void) { return m_Support; }
+
 private:
-    CMainGui(void);					// Disable default constructor
-    CMainGui(const CMainGui&);			// Disable copy constructor
-    CMainGui& operator=(const CMainGui&);	// Disable assignment
+    CMainGui(void);
+    CMainGui(const CMainGui&);
+    CMainGui& operator=(const CMainGui&);
 
     friend class CGfxPlugin;
     friend class CAudioPlugin;
@@ -109,37 +101,38 @@ private:
     void SetWindowCaption(const wchar_t * Caption);
     void ShowRomBrowser(void);
 
-    friend DWORD CALLBACK AboutBoxProc(HWND, DWORD, DWORD, DWORD);
-    friend DWORD CALLBACK AboutIniBoxProc(HWND, DWORD, DWORD, DWORD);
     static LRESULT CALLBACK MainGui_Proc(HWND, DWORD, DWORD, DWORD);
 
     friend void RomBowserEnabledChanged(CMainGui * Gui);
     friend void RomBowserColoumnsChanged(CMainGui * Gui);
     friend void RomBrowserListChanged(CMainGui * Gui);
+	friend void DiscordRPCChanged(CMainGui * Gui);
     static void LoadingInProgressChanged(CMainGui * Gui);
     static void GameLoaded(CMainGui * Gui);
     static void GamePaused(CMainGui * Gui);
     static void GameCpuRunning(CMainGui * Gui);
 
-    CBaseMenu     * m_Menu;
+    CBaseMenu * m_Menu;
 
-    HWND           m_hMainWindow, m_hStatusWnd;
-    DWORD          m_ThreadId;
+    HWND m_hMainWindow, m_hStatusWnd;
+    DWORD m_ThreadId;
+    CCheatsUI m_CheatsUI;
+    CProjectSupport m_Support;
 
-    const bool     m_bMainWindow;
-    bool           m_Created;
-    bool           m_AttachingMenu;
-    bool           m_MakingVisible;
-    bool           m_ResetPlugins;
+    const bool m_bMainWindow;
+    bool m_Created;
+    bool m_AttachingMenu;
+    bool m_MakingVisible;
+    bool m_ResetPlugins;
     RESET_PLUGIN * m_ResetInfo;
 
     CriticalSection m_CS;
 
-    bool        m_SaveMainWindowPos;
-    LONG        m_SaveMainWindowTop;
-    LONG        m_SaveMainWindowLeft;
+    bool m_SaveMainWindowPos;
+    LONG m_SaveMainWindowTop;
+    LONG m_SaveMainWindowLeft;
 
-    bool        m_SaveRomBrowserPos;
-    LONG        m_SaveRomBrowserTop;
-    LONG        m_SaveRomBrowserLeft;
+    bool m_SaveRomBrowserPos;
+    LONG m_SaveRomBrowserTop;
+    LONG m_SaveRomBrowserLeft;
 };

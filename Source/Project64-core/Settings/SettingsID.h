@@ -79,6 +79,7 @@ enum SettingID
 	Default_FixedAudio,
 	Default_UnalignedDMA,
 	Default_RandomizeSIPIInterrupts,
+	Default_SMM_Protect_Memory,
 
     //RDB Settings
     Rdb_GoodName,
@@ -119,6 +120,7 @@ enum SettingID
     Rdb_CRC_Recalc,
     Rdb_UnalignedDMA,
     Rdb_RandomizeSIPIInterrupts,
+	Rdb_RPCKey,
 
     //Individual Game Settings
     Game_IniKey,
@@ -176,6 +178,7 @@ enum SettingID
     Game_FullSpeed,
     Game_UnalignedDMA,
     Game_RandomizeSIPIInterrupts,
+	Game_RPCKey,
 
     // General Game running info
     GameRunning_LoadingInProgress,
@@ -335,13 +338,9 @@ enum SettingID
     Cheat_Entry,
     Cheat_Notes,
     Cheat_Options,
-    Cheat_Range,
-    Cheat_RangeNotes,
     Cheat_UserEntry,
     Cheat_UserNotes,
     Cheat_UserOptions,
-    Cheat_UserRange,
-    Cheat_UserRangeNotes,
     Cheat_Active,
     Cheat_Extension,
 
