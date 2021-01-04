@@ -30,6 +30,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO EndErr
 rd "%base_dir%\Bin\Package" /Q /S > NUL 2>&1
 md "%base_dir%\Bin\Package"
 md "%base_dir%\Bin\Package\Config"
+md "%base_dir%\Bin\Package\Config\Cheats"
 md "%base_dir%\Bin\Package\Lang"
 md "%base_dir%\Bin\Package\Plugin%VSPlatform%"
 md "%base_dir%\Bin\Package\Plugin%VSPlatform%\Audio"
@@ -48,7 +49,7 @@ copy "%base_dir%\Plugin%VSPlatform%\GFX\GLideN64\translations\*.Lang" "%base_dir
 copy "%base_dir%\Bin\Release%VSPlatform%\Project64.exe" "%base_dir%\Bin\Package"
 copy "%base_dir%\Config\Video.rdb" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Audio.rdb" "%base_dir%\Bin\Package\Config"
-copy "%base_dir%\Config\Project64.cht" "%base_dir%\Bin\Package\Config"
+copy "%base_dir%\Config\Cheats\*.cht" "%base_dir%\Bin\Package\Config\Cheats"
 copy "%base_dir%\Config\Project64.enh" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Project64.rdb" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Project64.rdx" "%base_dir%\Bin\Package\Config"

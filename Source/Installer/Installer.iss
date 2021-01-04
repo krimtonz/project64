@@ -26,7 +26,7 @@ Filename: "{app}\Project64.exe"; Description: "{cm:LaunchProgram,{#StringChange(
 Source: "{#BaseDir}\Bin\{#Configuration}\Project64.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BaseDir}\Config\Video.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Audio.rdb"; DestDir: "{app}\Config"
-Source: "{#BaseDir}\Config\Project64.cht"; DestDir: "{app}\Config"
+Source: "{#BaseDir}\Config\Cheats\*.cht"; DestDir: "{app}\Config\Cheats"
 Source: "{#BaseDir}\Config\Project64.enh"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.rdx"; DestDir: "{app}\Config"
@@ -44,6 +44,7 @@ Source: "{#BaseDir}\apidoc.htm"; DestDir: "{app}"
 
 [Dirs]
 Name: "{app}\Config"; Permissions: everyone-full
+Name: "{app}\Config\Cheats-User"; Permissions: everyone-full
 Name: "{app}\Logs"; Permissions: everyone-full
 Name: "{app}\Save"; Permissions: everyone-full
 Name: "{app}\Screenshots"; Permissions: everyone-full
